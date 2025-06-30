@@ -7,55 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Script de autenticación -->
-    <script>
-        // Verificar autenticación al cargar la página
-        window.addEventListener('load', function() {
-            if (localStorage.getItem('isLoggedIn') !== 'true') {
-                // No está logueado, redirigir al login
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            // Verificar si la sesión ha expirado (opcional - 24 horas)
-            const loginTime = localStorage.getItem('loginTime');
-            if (loginTime) {
-                const now = new Date();
-                const loginDate = new Date(loginTime);
-                const hoursDiff = (now - loginDate) / (1000 * 60 * 60);
-                
-                if (hoursDiff > 24) {
-                    // Sesión expirada
-                    localStorage.removeItem('isLoggedIn');
-                    localStorage.removeItem('userEmail');
-                    localStorage.removeItem('loginTime');
-                    alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-                    window.location.href = 'login.html';
-                    return;
-                }
-            }
-            
-            // Mostrar email del usuario en la navegación si existe
-            const userEmail = localStorage.getItem('userEmail');
-            if (userEmail) {
-                // Buscar donde mostrar el email del usuario (puedes personalizar esto)
-                const userDisplay = document.getElementById('userDisplay');
-                if (userDisplay) {
-                    userDisplay.textContent = userEmail;
-                }
-            }
-        });
-        
-        // Función para cerrar sesión
-        function logout() {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('loginTime');
-            window.location.href = 'login.html';
-        }
-    </script>
-    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -488,11 +439,7 @@
                 <a href="#" class="dark:text-altum-text-secondary text-light-text-secondary hover:text-altum-accent dark:hover:text-altum-accent transition-colors">Inversores</a>
                 <a href="#" class="dark:text-altum-text-secondary text-light-text-secondary hover:text-altum-accent dark:hover:text-altum-accent transition-colors">Reportes</a>
                 <a href="#" class="dark:text-altum-text-secondary text-light-text-secondary hover:text-altum-accent dark:hover:text-altum-accent transition-colors">Configuración</a>
-                <span id="userDisplay" class="dark:text-altum-text-secondary text-light-text-secondary text-sm"></span>
                 <button class="bg-altum-accent hover:bg-altum-accent-hover text-white px-4 py-2 rounded-md font-semibold transition-colors shadow-md hover:shadow-lg text-sm">Depositar</button>
-                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-semibold transition-colors shadow-md hover:shadow-lg text-sm">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Salir
-                </button>
             </div>
             <div class="md:hidden">
                 <button class="text-altum-accent focus:outline-none">
@@ -506,7 +453,7 @@
        <section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
   <!-- Nueva imagen de portada -->
   <img 
-    src="https://i.imgur.com/3ZTlgM0.jpg" 
+    src="https://i.imgur.com/6xu7iF4.jpeg" 
     alt="Altum Capital" 
     class="absolute inset-0 w-full h-full object-cover"
   >
