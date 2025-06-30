@@ -7,6 +7,51 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Script de autenticación mejorado -->
+    <script>
+        // Verificación de autenticación al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Verificar si el usuario está logueado
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            // 2. Verificar tiempo de sesión (24 horas máximo)
+            const loginTime = localStorage.getItem('loginTime');
+            let sessionValid = false;
+            
+            if (loginTime) {
+                const sessionDuration = (new Date() - new Date(loginTime)) / (1000 * 60 * 60);
+                sessionValid = sessionDuration <= 24;
+            }
+            
+            // 3. Redirigir si no cumple los requisitos
+            if (!isLoggedIn || !sessionValid) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('loginTime');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // 4. Mostrar email del usuario
+            const userEmail = localStorage.getItem('userEmail');
+            if (userEmail) {
+                const userDisplay = document.getElementById('userDisplay');
+                if (userDisplay) {
+                    userDisplay.textContent = userEmail;
+                }
+            }
+        });
+
+        // Función para cerrar sesión
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('loginTime');
+            window.location.href = 'index.html';
+        }
+    </script>
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -49,7 +94,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
-        /* Estilos generales (se mantienen igual) */
+        /* Estilos generales */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -87,7 +132,7 @@
             }
         }
 
-        /* Resto de estilos se mantienen igual */
+        /* Estilos de gráficos */
         .chartjs-tooltip {
             background: rgba(30, 34, 45, 0.95) !important;
             color: #E5E7EB !important;
@@ -128,6 +173,7 @@
             }
         }
 
+        /* Estilos de entrada */
         input:focus, select:focus {
             outline: 2px solid transparent;
             outline-offset: 2px;
@@ -138,6 +184,7 @@
             box-shadow: 0 0 0 2px var(--light-bg), 0 0 0 4px var(--tw-ring-color);
         }
 
+        /* Estilos de filas */
         .investor-row {
             cursor: pointer;
             transition: background-color 0.2s;
@@ -149,6 +196,7 @@
             background-color: rgba(243, 244, 246, 0.5);
         }
 
+        /* Transiciones */
         .transition-colors {
             transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
         }
@@ -156,12 +204,14 @@
             transition: box-shadow 0.2s ease;
         }
         
+        /* Contenedores de gráficos */
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
         }
 
+        /* Modo claro */
         .light body {
             background-color: #F9FAFB;
             color: #111827;
@@ -185,6 +235,7 @@
             background-color: #E5E7EB;
         }
         
+        /* Estilos del logo */
         .logo-container {
             display: flex;
             align-items: center;
@@ -196,21 +247,19 @@
             justify-content: center;
             width: 2.5rem;
             height: 2.5rem;
-            border-radius: 0.5rem;
-            background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+            border-radius: 50%;
+            background: black;
             color: white;
-            font-weight: 700;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
         }
         .logo-text {
             font-weight: 700;
             font-size: 1.25rem;
-            background: linear-gradient(135deg, #E5E7EB 0%, #9CA3AF 100%);
+            background: linear-gradient(135deg, #FFFFFF 0%, #CCCCCC 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
         .light .logo-text {
             background: linear-gradient(135deg, #111827 0%, #4B5563 100%);
@@ -219,6 +268,7 @@
             -webkit-text-fill-color: transparent;
         }
         
+        /* Badges de estado */
         .status-badge {
             padding: 0.25rem 0.5rem;
             border-radius: 9999px;
@@ -239,6 +289,7 @@
             color: #F59E0B;
         }
 
+        /* Hero section */
         .video-hero {
             position: relative;
             width: 100vw;
@@ -316,6 +367,7 @@
             }
         }
 
+        /* Filtros */
         .filter-label {
             display: block;
             font-size: 0.75rem;
@@ -392,7 +444,7 @@
             background-color: #D1D5DB;
         }
 
-        /* Nuevos estilos para scroll horizontal */
+        /* Scroll horizontal */
         .overflow-x-auto {
             -ms-overflow-style: none;
             scrollbar-width: none;
@@ -425,21 +477,29 @@
         </button>
     </div>
 
-    <!-- Barra de navegación -->
+    <!-- Barra de navegación con nuevo logo -->
     <nav class="dark:bg-altum-card-bg bg-light-card shadow-lg border-b dark:border-altum-border border-light-border sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
           <div class="logo-container">
                 <div class="logo-icon">
-                    
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14C0 21.732 6.26801 28 14 28Z" fill="black"/>
+                        <path d="M18.5 10.5L14 14L9.5 10.5L14 7L18.5 10.5Z" fill="white"/>
+                        <path d="M18.5 17.5L14 21L9.5 17.5L14 14L18.5 17.5Z" fill="white"/>
+                    </svg>
                 </div>
-                <span class="logo-text">Renford Sterling</span>
+                <span class="logo-text">RENFORD STERLING</span>
             </div>
             <div class="hidden md:flex items-center space-x-6">
                 <a href="#" class="dark:text-altum-text-secondary text-light-text-secondary hover:text-altum-accent dark:hover:text-altum-accent font-medium transition-colors">Dashboard</a>
                 <a href="#" class="dark:text-altum-text-secondary text-light-text-secondary hover:text-altum-accent dark:hover:text-altum-accent transition-colors">Inversores</a>
                 <a href="#" class="dark:text-altum-text-secondary text-light-text-secondary hover:text-altum-accent dark:hover:text-altum-accent transition-colors">Reportes</a>
                 <a href="#" class="dark:text-altum-text-secondary text-light-text-secondary hover:text-altum-accent dark:hover:text-altum-accent transition-colors">Configuración</a>
+                <span id="userDisplay" class="dark:text-altum-text-secondary text-light-text-secondary text-sm"></span>
                 <button class="bg-altum-accent hover:bg-altum-accent-hover text-white px-4 py-2 rounded-md font-semibold transition-colors shadow-md hover:shadow-lg text-sm">Depositar</button>
+                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-semibold transition-colors shadow-md hover:shadow-lg text-sm">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Salir
+                </button>
             </div>
             <div class="md:hidden">
                 <button class="text-altum-accent focus:outline-none">
@@ -449,43 +509,32 @@
         </div>
     </nav>
 
-    <!-- Hero Section corregida -->
-       <section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
-  <!-- Nueva imagen de portada -->
-  <img 
-    src="https://i.imgur.com/6xu7iF4.jpeg" 
-    alt="Altum Capital" 
-    class="absolute inset-0 w-full h-full object-cover"
-  >
-  
-  <!-- Capa semitransparente para mejorar legibilidad -->
-  <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-transparent"></div>
-  
-  <!-- Contenido centrado -->
-  <div class="relative z-10 text-center px-4 w-full max-w-4xl">
-    <!-- Título principal -->
-    <h1 class="text-3xl md:text-4xl font-bold text-white mb-8">
-      RESILIENCIA FINANCIERA EN TIEMPOS DE CONFLICTO
-    </h1>
-    
-    <!-- Badge de desarrollo -->
-    <div class="inline-flex items-center bg-black/70 border border-green-400 text-green-300 px-6 py-3 rounded-full text-sm font-medium tracking-widest">
-      <i class="fas fa-cog fa-spin mr-2"></i>
-      PLATAFORMA EN DESARROLLO
-    </div>
-  </div>
-</section>
-
-<style>
-  .fa-spin {
-    animation: fa-spin 2s infinite linear;
-  }
-  @keyframes fa-spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-</style>
-
+    <!-- Hero Section -->
+    <section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+        <!-- Imagen de portada -->
+        <img 
+            src="https://i.imgur.com/6xu7iF4.jpeg" 
+            alt="Renford Sterling" 
+            class="absolute inset-0 w-full h-full object-cover"
+        >
+        
+        <!-- Capa semitransparente -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-transparent"></div>
+        
+        <!-- Contenido centrado -->
+        <div class="relative z-10 text-center px-4 w-full max-w-4xl">
+            <!-- Título principal -->
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-8">
+                RESILIENCIA FINANCIERA EN TIEMPOS DE CONFLICTO
+            </h1>
+            
+            <!-- Badge de desarrollo -->
+            <div class="inline-flex items-center bg-black/70 border border-green-400 text-green-300 px-6 py-3 rounded-full text-sm font-medium tracking-widest">
+                <i class="fas fa-cog fa-spin mr-2"></i>
+                PLATAFORMA EN DESARROLLO
+            </div>
+        </div>
+    </section>
 
     <!-- Contenido principal -->
     <main class="container mx-auto px-4 py-8 -mt-4 relative z-10">
@@ -531,18 +580,17 @@
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y dark:divide-altum-border divide-light-border">
                     <thead class="dark:bg-altum-border bg-light-border bg-opacity-50">
-    <tr>
-        <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">#</th>
-        <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Inversor</th>
-        <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Balance Actual</th>
-        <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Rendimiento (%)</th>
-        <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Balance Inicial</th>
-        <!-- Código movido aquí -->
-        <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Código</th>
-        <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Estado</th>
-        <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Acciones</th>
-    </tr>
-</thead>
+                        <tr>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">#</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Inversor</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Balance Actual</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Rendimiento (%)</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Balance Inicial</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Código</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Estado</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium dark:text-altum-text-secondary text-light-text-secondary uppercase tracking-wider">Acciones</th>
+                        </tr>
+                    </thead>
                     <tbody class="dark:bg-altum-card-bg bg-light-card divide-y dark:divide-altum-border divide-light-border" id="investors-table">
                         <!-- Inversores se cargarán dinámicamente -->
                     </tbody>
@@ -560,9 +608,9 @@
             </div>
         </div>
 
-        <!-- Sección de Actividad Reciente y Noticias del Mercado en dos columnas -->
+        <!-- Sección de Actividad Reciente y Noticias del Mercado -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <!-- Sección de Actividad Reciente Simple -->
+            <!-- Sección de Actividad Reciente -->
             <div class="dark:bg-altum-card-bg bg-light-card rounded-lg shadow-md p-4 dark:border-altum-border border-light-border">
                 <h3 class="text-base font-medium dark:text-white text-light-text mb-3">Actividad Reciente</h3>
                 
@@ -835,7 +883,7 @@ India lanza un ataque con misiles contra Pakistán y escala las tensiones entre 
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                  <div>
-                    <h3 class="text-lg font-semibold mb-4 dark:text-white text-light-text">Altum Capital</h3>
+                    <h3 class="text-lg font-semibold mb-4 dark:text-white text-light-text">Renford Sterling</h3>
                     <p class="text-sm">Comprometidos con una gestión responsable, transparente y segura.</p>
                 </div>
                  <div>
@@ -858,14 +906,14 @@ India lanza un ataque con misiles contra Pakistán y escala las tensiones entre 
                  <div>
                     <h3 class="text-base font-semibold mb-4 dark:text-white text-light-text">Contacto</h3>
                     <ul class="space-y-2 text-sm">
-                        <li class="flex items-center"><i class="fas fa-envelope mr-2 text-xs"></i> info@altumcapital.com</li>
-                        <li class="flex items-center"><i class="fas fa-phone mr-2 text-xs"></i> +57 3044514699 </li>
-                        <li class="flex items-center"><i class="fas fa-map-marker-alt mr-2 text-xs"></i> Medellìn, Colombia</li>
+                        <li class="flex items-center"><i class="fas fa-envelope mr-2 text-xs"></i> info@renfordsterling.com</li>
+                        <li class="flex items-center"><i class="fas fa-phone mr-2 text-xs"></i> +57 3044514699</li>
+                        <li class="flex items-center"><i class="fas fa-map-marker-alt mr-2 text-xs"></i> Medellín, Colombia</li>
                     </ul>
                 </div>
             </div>
             <div class="border-t dark:border-altum-border border-light-border mt-8 pt-8 text-center text-xs">
-                <p>© 2025 Altum Capital. Todos los derechos reservados.</p>
+                <p>© 2025 Renford Sterling. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
@@ -994,50 +1042,44 @@ India lanza un ataque con misiles contra Pakistán y escala las tensiones entre 
             },
             // Inversor 6 (Audbar)
             {
-    id: 6,
-    username: "Audbar",
-    code: "195443700",
-    initialBalance: 5390,          // Total depositado (se mantiene igual)
-    balance: 5547.33 + 23.00,      // Nuevo balance: 5570.33
-    deposits: 6,
-    withdrawals: 1,
-    status: "high",
-    cuanto: 0,
-    maxLot: 0.06,
-    // Rendimiento RECALCULADO: ((NuevoBalance - initialBalance) / initialBalance * 100)
-    performance: ((5570.33 - 5390) / 5390 * 100).toFixed(2),  // ≈ 3.35%
-    balanceChange: "+3.35% en junio",  // Actualizado
-    operations: [
-        // Depósito (24/06/2025)
-        {
-            date: "24/06/2025",
-            operation: "DEPOSIT",
-            session: "BALANCE",
-            open: 4547.73,         // Ajustado para coincidir con el cálculo
-            close: 5547.33,        // 4547.73 + 999.60
-            result: "Depósito",
-            observation: "Balance inicial de junio: $4,547.73 USD"
-        },
-        // Retiro (18/06/2025)
-        {
-            date: "18/06/2025",
-            operation: "WITHDRAWAL",
-            session: "BALANCE",
-            open: 4547.73,         // Mismo balance base
-            close: 4547.73 - 31.91, // Retiro de $31.91 USD
-            result: "Retiro 31.91 USD",
-            observation: "Ajuste por movimiento"
-        }
-
-
-    ],
-    growthData: {
-        '1M': [474, 475, 476, 477, 478, 479.17, 4477.73],  // Añadido balance final
-        '3M': [470, 471, 472, 473, 474, 475, 476, 477, 478, 479.17, 4477.73],
-        '6M': [460, 465, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479.17, 4477.73],
-        '1A': [450, 455, 460, 465, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479.17, 4477.73]
-    }
-
+                id: 6,
+                username: "Audbar",
+                code: "195443700",
+                initialBalance: 5390,
+                balance: 5570.33,
+                deposits: 6,
+                withdrawals: 1,
+                status: "high",
+                cuanto: 0,
+                maxLot: 0.06,
+                performance: 3.35,
+                balanceChange: "+3.35% en junio",
+                operations: [
+                    {
+                        date: "24/06/2025",
+                        operation: "DEPOSIT",
+                        session: "BALANCE",
+                        open: 4547.73,
+                        close: 5547.33,
+                        result: "Depósito",
+                        observation: "Balance inicial de junio: $4,547.73 USD"
+                    },
+                    {
+                        date: "18/06/2025",
+                        operation: "WITHDRAWAL",
+                        session: "BALANCE",
+                        open: 4547.73,
+                        close: 4547.73 - 31.91,
+                        result: "Retiro 31.91 USD",
+                        observation: "Ajuste por movimiento"
+                    }
+                ],
+                growthData: {
+                    '1M': [474, 475, 476, 477, 478, 479.17, 4477.73],
+                    '3M': [470, 471, 472, 473, 474, 475, 476, 477, 478, 479.17, 4477.73],
+                    '6M': [460, 465, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479.17, 4477.73],
+                    '1A': [450, 455, 460, 465, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479.17, 4477.73]
+                }
             },
             // Inversor 7 (Armexf)
             {
@@ -1072,104 +1114,101 @@ India lanza un ataque con misiles contra Pakistán y escala las tensiones entre 
                 }
             },
             // Inversor 8 (Anprada)
-             {
-        id: 8,
-        username: "Anprada",
-        code: "107363527",
-        initialBalance: 500.00,
-        balance: 535.12,  // Actualizado (+0.9)
-        deposits: 1,
-        withdrawals: 1,
-        status: "high",
-        cuanto: 6.1,
-        maxLot: 0.03,
-        performance: 7.02,  // Actualizado (era 6.84)
-        balanceChange: "+7.02% este mes",  // Actualizado
-        operations: [
-            // Operaciones anteriores eliminadas (según lo solicitado)
             {
-                date: "09/06/2025",
-                operation: "Venta",
-                session: "New York",
-                open: 1.1822,
-                close: 1.15282,
-                result: "Take Profit (+6 USD)",
-                observation: "EUR/USD - Lote: 0.03"
+                id: 8,
+                username: "Anprada",
+                code: "107363527",
+                initialBalance: 500.00,
+                balance: 535.12,
+                deposits: 1,
+                withdrawals: 1,
+                status: "high",
+                cuanto: 6.1,
+                maxLot: 0.03,
+                performance: 7.02,
+                balanceChange: "+7.02% este mes",
+                operations: [
+                    {
+                        date: "09/06/2025",
+                        operation: "Venta",
+                        session: "New York",
+                        open: 1.1822,
+                        close: 1.15282,
+                        result: "Take Profit (+6 USD)",
+                        observation: "EUR/USD - Lote: 0.03"
+                    },
+                    {
+                        date: "16/06/2025",
+                        operation: "Compra",
+                        session: "London",
+                        open: 1.1200,
+                        close: 1.1150,
+                        result: "Stop Loss (-5.1 USD)",
+                        observation: "EUR/USD - Lote: 0.03"
+                    }
+                ],
+                growthData: {
+                    '1M': [500, 510, 520, 530, 535.12],
+                    '3M': [450, 460, 470, 480, 490, 500, 510, 520, 530, 535.12],
+                    '6M': [400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 535.12],
+                    '1A': [350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 535.12]
+                }
             },
-            {
-                date: "16/06/2025",
-                operation: "Compra",
-                session: "London",
-                open: 1.1200,
-                close: 1.1150,
-                result: "Stop Loss (-5.1 USD)",
-                observation: "EUR/USD - Lote: 0.03"
-            }
-        ],
-        growthData: {
-            '1M': [500, 510, 520, 530, 535.12],
-            '3M': [450, 460, 470, 480, 490, 500, 510, 520, 530, 535.12],
-            '6M': [400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 535.12],
-            '1A': [350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500, 510, 520, 530, 535.12]
-        }
-    },
             // Inversor 9 (Alejmo)
             {
-        id: 9,
-        username: "Alejmo",
-        code: "764977124",
-        initialBalance: 206.00,
-        balance: 235.30,  // Actualizado (234.40 + 6 - 5.1)
-        deposits: 1,
-        withdrawals: 0,
-        status: "medium",
-        cuanto: 0.09,
-        maxLot: 0.1,
-        performance: 14.22,  // Actualizado (antes 13.79)
-        balanceChange: "+14.22% este mes",  // Actualizado
-        operations: [
-            // Operación original conservada
-            {
-                date: "30/04/2025",
-                operation: "Venta",
-                session: "New York",
-                open: 1.13534,
-                close: 1.13366,
-                result: "Take Profit (5.17)",
-                observation: "EUR/USD - Lote: 0.03"
-            },
-            // Operaciones nuevas añadidas
-            {
-                date: "09/06/2025",
-                operation: "Compra",
-                session: "New York",
-                open: 1.1822,
-                close: 1.1850,
-                result: "Take Profit (+6 USD)",
-                observation: "EUR/USD - Lote: 0.03"
-            },
-            {
-                date: "16/06/2025",
-                operation: "Venta",
-                session: "London",
-                open: 1.1200,
-                close: 1.1150,
-                result: "Stop Loss (-5.1 USD)",
-                observation: "EUR/USD - Lote: 0.03"
+                id: 9,
+                username: "Alejmo",
+                code: "764977124",
+                initialBalance: 206.00,
+                balance: 235.30,
+                deposits: 1,
+                withdrawals: 0,
+                status: "medium",
+                cuanto: 0.09,
+                maxLot: 0.1,
+                performance: 14.22,
+                balanceChange: "+14.22% este mes",
+                operations: [
+                    {
+                        date: "30/04/2025",
+                        operation: "Venta",
+                        session: "New York",
+                        open: 1.13534,
+                        close: 1.13366,
+                        result: "Take Profit (5.17)",
+                        observation: "EUR/USD - Lote: 0.03"
+                    },
+                    {
+                        date: "09/06/2025",
+                        operation: "Compra",
+                        session: "New York",
+                        open: 1.1822,
+                        close: 1.1850,
+                        result: "Take Profit (+6 USD)",
+                        observation: "EUR/USD - Lote: 0.03"
+                    },
+                    {
+                        date: "16/06/2025",
+                        operation: "Venta",
+                        session: "London",
+                        open: 1.1200,
+                        close: 1.1150,
+                        result: "Stop Loss (-5.1 USD)",
+                        observation: "EUR/USD - Lote: 0.03"
+                    }
+                ],
+                growthData: {
+                    '1M': [206, 210, 215, 220, 225, 230, 234.40, 235.30],
+                    '3M': [200, 205, 210, 215, 220, 225, 230, 234.40, 235.30],
+                    '6M': [190, 195, 200, 205, 210, 215, 220, 225, 230, 234.40, 235.30],
+                    '1A': [180, 185, 190, 195, 200, 205, 210, 215, 220, 225, 230, 234.40, 235.30]
+                }
             }
-        ],
-        growthData: {
-            '1M': [206, 210, 215, 220, 225, 230, 234.40, 235.30],
-            '3M': [200, 205, 210, 215, 220, 225, 230, 234.40, 235.30],
-            '6M': [190, 195, 200, 205, 210, 215, 220, 225, 230, 234.40, 235.30],
-            '1A': [180, 185, 190, 195, 200, 205, 210, 215, 220, 225, 230, 234.40, 235.30]
-        }
-    }
         ];
 
         // Variables para paginación
         let currentPage = 1;
-        const investorsPerPage = 8; // Cambiado de 5 a 8
+        const investorsPerPage = 8;
         let filteredInvestors = [...investorsData];
         let growthChart = null;
         let currentTimeRange = '1M';
@@ -1212,24 +1251,22 @@ India lanza un ataque con misiles contra Pakistán y escala las tensiones entre 
                 const statusClass = `status-${investor.status}`;
                 
                 row.innerHTML = `
-    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium dark:text-altum-text-primary text-light-text">${i + 1}</td>
-    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium dark:text-white text-light-text">${investor.username}</td>
-    <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold dark:text-white text-light-text">${formatUSD(investor.balance)}</td>
-    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium ${performanceClass}">
-        <i class="fas ${performanceIcon} mr-1"></i> ${investor.performance}%
-    </td>
-    <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold dark:text-white text-light-text">${formatUSD(investor.initialBalance)}</td>
-    <!-- Código después de Balance Inicial -->
-    <td class="px-4 py-4 whitespace-nowrap text-sm dark:text-altum-text-secondary text-light-text-secondary">${investor.code}</td>
-    <td class="px-4 py-4 whitespace-nowrap text-sm">
-        <span class="status-badge ${statusClass}">${getStatusText(investor.status)}</span>
-    </td>
-    <td class="px-4 py-4 whitespace-nowrap text-sm dark:text-altum-text-secondary text-light-text-secondary">
-        <button class="text-altum-accent hover:text-altum-accent-hover view-detail transition-colors font-medium" data-id="${investor.id}">
-            <i class="fas fa-eye mr-1 text-xs"></i> Ver
-        </button>
-    </td>
-
+                    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium dark:text-altum-text-primary text-light-text">${i + 1}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium dark:text-white text-light-text">${investor.username}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold dark:text-white text-light-text">${formatUSD(investor.balance)}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium ${performanceClass}">
+                        <i class="fas ${performanceIcon} mr-1"></i> ${investor.performance}%
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold dark:text-white text-light-text">${formatUSD(investor.initialBalance)}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm dark:text-altum-text-secondary text-light-text-secondary">${investor.code}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm">
+                        <span class="status-badge ${statusClass}">${getStatusText(investor.status)}</span>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-sm dark:text-altum-text-secondary text-light-text-secondary">
+                        <button class="text-altum-accent hover:text-altum-accent-hover view-detail transition-colors font-medium" data-id="${investor.id}">
+                            <i class="fas fa-eye mr-1 text-xs"></i> Ver
+                        </button>
+                    </td>
                 `;
                 tableBody.appendChild(row);
             }
@@ -1403,46 +1440,45 @@ India lanza un ataque con misiles contra Pakistán y escala las tensiones entre 
             document.getElementById('detail-withdrawals').textContent = investor.withdrawals;
             document.getElementById('detail-max-lot').textContent = investor.maxLot;
 
-            // Renderizar operaciones o mensaje si no hay
-const operationsTable = document.getElementById('detail-operations');
-operationsTable.innerHTML = '';
+            // Renderizar operaciones
+            const operationsTable = document.getElementById('detail-operations');
+            operationsTable.innerHTML = '';
 
-if (investor.operations && investor.operations.length > 0) {
-    investor.operations.forEach(op => {
-        const row = document.createElement('tr');
-        
-        // Modificación aquí: agregar condición especial para DEPOSIT
-        let resultClass, operationClass;
-        
-        if (op.operation === 'DEPOSIT') {
-            resultClass = 'text-success';
-            operationClass = 'bg-green-900 bg-opacity-40 text-green-300';
-        } else if (op.operation === 'WITHDRAWAL') {
-            resultClass = 'text-danger';
-            operationClass = 'bg-red-900 bg-opacity-40 text-red-300';
-        } else {
-            resultClass = op.result.includes('Profit') ? 'text-success' : 'text-danger';
-            operationClass = op.operation === 'Compra' 
-                ? 'bg-green-900 bg-opacity-40 text-green-300' 
-                : 'bg-red-900 bg-opacity-40 text-red-300';
-        }
+            if (investor.operations && investor.operations.length > 0) {
+                investor.operations.forEach(op => {
+                    const row = document.createElement('tr');
+                    
+                    let resultClass, operationClass;
+                    
+                    if (op.operation === 'DEPOSIT') {
+                        resultClass = 'text-success';
+                        operationClass = 'bg-green-900 bg-opacity-40 text-green-300';
+                    } else if (op.operation === 'WITHDRAWAL') {
+                        resultClass = 'text-danger';
+                        operationClass = 'bg-red-900 bg-opacity-40 text-red-300';
+                    } else {
+                        resultClass = op.result.includes('Profit') ? 'text-success' : 'text-danger';
+                        operationClass = op.operation === 'Compra' 
+                            ? 'bg-green-900 bg-opacity-40 text-green-300' 
+                            : 'bg-red-900 bg-opacity-40 text-red-300';
+                    }
 
-        row.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-altum-text-primary text-light-text">${op.date}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">
-                <span class="px-2 py-1 ${operationClass} rounded-full text-xs font-medium">${op.operation}</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm dark:text-altum-text-secondary text-light-text-secondary">${op.session}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm dark:text-altum-text-secondary text-light-text-secondary">${op.open}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm dark:text-altum-text-secondary text-light-text-secondary">${op.close}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${resultClass}">${op.result}</td>
-            <td class="px-6 py-4 text-sm dark:text-altum-text-secondary text-light-text-secondary max-w-xs truncate" title="${op.observation}">${op.observation}</td>
-        `;
-        operationsTable.appendChild(row);
-    });
-}
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-altum-text-primary text-light-text">${op.date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="px-2 py-1 ${operationClass} rounded-full text-xs font-medium">${op.operation}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm dark:text-altum-text-secondary text-light-text-secondary">${op.session}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm dark:text-altum-text-secondary text-light-text-secondary">${op.open}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm dark:text-altum-text-secondary text-light-text-secondary">${op.close}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${resultClass}">${op.result}</td>
+                        <td class="px-6 py-4 text-sm dark:text-altum-text-secondary text-light-text-secondary max-w-xs truncate" title="${op.observation}">${op.observation}</td>
+                    `;
+                    operationsTable.appendChild(row);
+                });
+            }
 
-            // Actualizar el gráfico de crecimiento con el rango de tiempo actual
+            // Actualizar el gráfico de crecimiento
             updateChartForTimeRange(currentTimeRange, investor);
 
             // Ajustar el círculo de progreso del lote máximo
@@ -1495,22 +1531,16 @@ if (investor.operations && investor.operations.length > 0) {
 
         // Función para cambiar entre modo claro y oscuro
         function toggleTheme() {
-function toggleTheme() {
-    const html = document.documentElement;
-    if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        html.classList.add('light');
-        localStorage.setItem('theme', 'light');
-    } else {
-        html.classList.remove('light');
-        html.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-    }
-    // Actualizar gráfico si existe
-    if (growthChart) {
-        // ... (código existente)
-    }
-}
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
             // Actualizar gráfico si existe
             if (growthChart) {
                 const investorId = parseInt(document.querySelector('#investors-table tr[data-investor-id]')?.getAttribute('data-investor-id'));
@@ -1526,14 +1556,11 @@ function toggleTheme() {
         // Event listeners
         document.addEventListener('DOMContentLoaded', () => {
             // Verificar preferencia de tema guardada
-const savedTheme = localStorage.getItem('theme');
-const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-
-// Solo cambiar a light si explícitamente está guardado como preferencia
-if (savedTheme === 'light') {
-    document.documentElement.classList.add('light');
-    document.documentElement.classList.remove('dark');
-}
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
 
             // Renderizar tabla inicial
             renderInvestorsTable();
