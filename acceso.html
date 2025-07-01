@@ -2,18 +2,18 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Renford Sterling | Confirmar Cuenta</title>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js "></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js "></script>
 
-  <!-- CryptoJS para hashing de contraseñas -->
+  <!-- CryptoJS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js "></script>
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css "/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css " />
 
   <!-- Fuentes -->
   <style>
@@ -41,9 +41,12 @@
     body {
       font-family: 'Inter', sans-serif;
       background: var(--light);
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
-      overflow: hidden;
+      flex-direction: row;
+      overflow-x: auto;
+      overflow-y: auto;
+      padding: 0;
     }
 
     /* Panel izquierdo - Hero */
@@ -55,9 +58,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 3rem;
       position: relative;
       overflow: hidden;
+      min-width: 300px;
     }
 
     .left-panel::before {
@@ -86,6 +90,7 @@
       z-index: 2;
       text-transform: uppercase;
       color: var(--primary);
+      text-align: center;
     }
 
     .brand-slogan {
@@ -277,23 +282,27 @@
     /* Responsive Design */
     @media (max-width: 768px) {
       body {
-        flex-direction: column;
-        height: auto;
-        min-height: 100vh;
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: auto;
       }
 
       .left-panel {
-        padding: 2rem 1rem;
-        text-align: center;
+        padding: 1.5rem 1rem;
+        min-width: 250px;
+        justify-content: start;
       }
 
       .brand-logo {
         font-size: 1.8rem;
         margin-bottom: 0.5rem;
+        text-align: center;
       }
 
       .brand-slogan {
-        display: none; /* Ocultar en móvil */
+        font-size: 0.85rem;
+        max-width: 90%;
+        margin-top: 1rem;
       }
 
       .right-panel {
@@ -303,15 +312,23 @@
       .form-title {
         font-size: 1.5rem;
       }
+
+      .form-container {
+        max-width: 360px;
+      }
     }
 
     @media (max-width: 480px) {
       .brand-logo {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
       }
 
       .form-title {
         font-size: 1.3rem;
+      }
+
+      .form-container {
+        max-width: 320px;
       }
     }
   </style>
