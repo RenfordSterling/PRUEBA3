@@ -2,18 +2,18 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Renford Sterling | Confirmar Cuenta</title>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js "></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js "></script>
 
-  <!-- CryptoJS -->
+  <!-- CryptoJS para hashing de contraseñas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js "></script>
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css " />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css "/>
 
   <!-- Fuentes -->
   <style>
@@ -41,12 +41,9 @@
     body {
       font-family: 'Inter', sans-serif;
       background: var(--light);
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
-      flex-direction: row;
-      overflow-x: auto;
-      overflow-y: auto;
-      padding: 0;
+      overflow: hidden;
     }
 
     /* Panel izquierdo - Hero */
@@ -58,10 +55,9 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 3rem;
+      padding: 2rem;
       position: relative;
       overflow: hidden;
-      min-width: 300px;
     }
 
     .left-panel::before {
@@ -90,7 +86,6 @@
       z-index: 2;
       text-transform: uppercase;
       color: var(--primary);
-      text-align: center;
     }
 
     .brand-slogan {
@@ -282,29 +277,23 @@
     /* Responsive Design */
     @media (max-width: 768px) {
       body {
-        flex-direction: row;
-        overflow-x: auto;
-        overflow-y: auto;
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
       }
 
       .left-panel {
-        min-width: 200px;
-        padding: 1rem;
-        justify-content: start;
-        height: 100%;
-        max-height: 400px;
-      }
-
-      .brand-logo {
-        font-size: 1.6rem;
-        margin-bottom: 0.5rem;
+        padding: 2rem 1rem;
         text-align: center;
       }
 
+      .brand-logo {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+
       .brand-slogan {
-        font-size: 0.8rem;
-        max-width: 90%;
-        margin-top: 0.5rem;
+        display: none; /* Ocultar en móvil */
       }
 
       .right-panel {
@@ -314,28 +303,15 @@
       .form-title {
         font-size: 1.5rem;
       }
-
-      .form-container {
-        max-width: 360px;
-      }
     }
 
     @media (max-width: 480px) {
-      .left-panel {
-        min-width: 180px;
-        max-height: 350px;
-      }
-
       .brand-logo {
-        font-size: 1.4rem;
+        font-size: 1.6rem;
       }
 
       .form-title {
         font-size: 1.3rem;
-      }
-
-      .form-container {
-        max-width: 320px;
       }
     }
   </style>
