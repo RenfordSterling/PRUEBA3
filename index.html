@@ -354,94 +354,66 @@
         </div>
     </div>
 
-    <script>
-        // Check if already logged in
-        document.addEventListener('DOMContentLoaded', function() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const loginTime = localStorage.getItem('loginTime');
-            
-            if (isLoggedIn && loginTime) {
-                const sessionDuration = (new Date() - new Date(loginTime)) / (1000 * 60 * 60);
-                if (sessionDuration <= 24) { // 24 hour valid session
-                    window.location.href = "dashboard.html";
-                } else {
-                    // Session expired - clear
-                    localStorage.removeItem('isLoggedIn');
-                    localStorage.removeItem('userEmail');
-                    localStorage.removeItem('loginTime');
-                }
-            }
-        });
+     <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDnEdMbAn99P1vleeBXRGiluu52r1Lh4E",
+      authDomain: "renfordinvestors.firebaseapp.com",
+      projectId: "renfordinvestors",
+      storageBucket: "renfordinvestors.appspot.com",
+      messagingSenderId: "902745224507",
+      appId: "1:902745224507:web:e3831c22c850a92924b31e"
+    };
 
-        document.getElementById("loginForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            
-            const email = document.getElementById("email").value.trim();
-            const password = document.getElementById("password").value;
-            const errorMessage = document.getElementById("errorMessage");
-            const successMessage = document.getElementById("successMessage");
-            const loginBtn = document.getElementById("loginBtn");
-            const loginBtnText = document.getElementById("loginBtnText");
-            const loadingSpinner = document.getElementById("loadingSpinner");
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-            // Hide previous messages
-            errorMessage.style.display = "none";
-            successMessage.style.display = "none";
+    document.getElementById("loginForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
 
-            // Show loading state
-            loginBtn.disabled = true;
-            loadingSpinner.style.display = "inline-block";
-            loginBtnText.textContent = "Signing in...";
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const errorMessage = document.getElementById("errorMessage");
+      const successMessage = document.getElementById("successMessage");
+      const loginBtn = document.getElementById("loginBtn");
+      const loginBtnText = document.getElementById("loginBtnText");
+      const loadingSpinner = document.getElementById("loadingSpinner");
 
-            // Allowed credentials
-            const allowedCredentials = {
-                "holaagrupofinanciero@gmail.com": "5432",
-                "Prada16010@gmail.com": "3527",
-                "garciaalejo67@gmail.com": "7124",
-                "audenbarranco0786@gmail.com": "3700"
-            };
+      errorMessage.style.display = "none";
+      successMessage.style.display = "none";
+      loginBtn.disabled = true;
+      loadingSpinner.style.display = "inline-block";
+      loginBtnText.textContent = "Verificando...";
 
-            // Simulate authentication delay
-            setTimeout(() => {
-                if (allowedCredentials[email] && allowedCredentials[email] === password) {
-                    // Successful login
-                    successMessage.textContent = "Login successful! Redirecting to dashboard...";
-                    successMessage.style.display = "block";
-                    
-                    // Save session state
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('userEmail', email);
-                    localStorage.setItem('loginTime', new Date().toISOString());
-                    
-                    // Redirect after brief delay
-                    setTimeout(() => {
-                        window.location.href = "dashboard.html";
-                    }, 1500);
-                } else {
-                    // Invalid credentials
-                    errorMessage.textContent = "Invalid email or password. Please check your credentials and try again.";
-                    errorMessage.style.display = "block";
-                    
-                    // Reset button
-                    loginBtn.disabled = false;
-                    loadingSpinner.style.display = "none";
-                    loginBtnText.textContent = "Sign In";
-                }
-            }, 1000);
-        });
+      try {
+        const doc = await db.collection("credenciales").doc(email).get();
+        if (!doc.exists) throw new Error("Correo no registrado.");
 
-        // Handle Enter key in input fields
-        document.getElementById("email").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                document.getElementById("password").focus();
-            }
-        });
+        const storedHash = doc.data().passwordHash;
+        const inputHash = CryptoJS.SHA256(password).toString();
 
-        document.getElementById("password").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                document.getElementById("loginForm").dispatchEvent(new Event('submit'));
-            }
-        });
-    </script>
+        if (storedHash === inputHash) {
+          successMessage.textContent = "Login exitoso. Redirigiendo...";
+          successMessage.style.display = "block";
+
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("userEmail", email);
+          localStorage.setItem("loginTime", new Date().toISOString());
+
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 1500);
+        } else {
+          throw new Error("Contraseña incorrecta.");
+        }
+      } catch (error) {
+        errorMessage.textContent = error.message;
+        errorMessage.style.display = "block";
+      } finally {
+        loginBtn.disabled = false;
+        loadingSpinner.style.display = "none";
+        loginBtnText.textContent = "Sign In";
+      }
+    });
+  </script>
 </body>
 </html>
