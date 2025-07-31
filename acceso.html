@@ -435,7 +435,7 @@
         }
 
         const hash = CryptoJS.SHA256(pass1).toString();
-        await db.collection("credenciales").doc(correo).set({
+        await db.collection("usuarios_autorizados").doc(correo).set({
           passwordHash: hash,
           timestamp: new Date()
         });
