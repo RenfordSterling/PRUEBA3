@@ -419,7 +419,7 @@
 
             try {
                 // Consultar Firestore
-                const doc = await db.collection("usuarios_autorizados").doc(email).get();
+                const doc = await db.collection("credenciales").doc(email).get();
                 
                 if (!doc.exists) {
                     throw new Error("Email not registered. Contact administrator.");
